@@ -1,0 +1,34 @@
+*{
+    font-family: "futura italic";
+    box-sizing: border-box;
+}
+.container{
+    position: absolute;
+    z-index: 2;
+
+}
+.contents{
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.text-area{
+
+}
+
+.text-area h1{
+    font-size: 120px;
+    color: #666;
+    font-style: italic;
+}
+.text-area p{
+    color: #999;
+}
+canvas{
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+}
