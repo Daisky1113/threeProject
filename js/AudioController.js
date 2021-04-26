@@ -135,9 +135,11 @@ class AudioController {
     }
 
     getFrequencyData() {
-        this.analyzerNode.getByteTimeDomainData(this.freqByteData)
+        this.analyzerNode.getByteFrequencyData(this.freqByteData)
         return this.freqByteData
     }
 
-
+    getFrequencyDataAverage(){
+        return this.freqByteData.reduce((a, b) => a + b) / this.freqByteData.length
+    }
 }

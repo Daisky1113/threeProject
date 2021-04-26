@@ -144,7 +144,7 @@ input[type="file"] {
 
 label {
     display: inline;
-  border-radius: 25px;
+  /* border-radius: 25px; */
   padding: 8px 16px;
   margin: 0 0 10px;
   background: #aaa;
