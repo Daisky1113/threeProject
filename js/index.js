@@ -17,6 +17,11 @@ class TextController {
                 el.show()
             }, i * this.duration)
         })
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve()
+            }, this.duration * this.items.length)
+        })
     }
 
     showSameTime() {
@@ -33,6 +38,11 @@ class TextController {
             setTimeout(() => {
                 el.hide()
             }, i * this.duration)
+        })
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve()
+            }, this.duration * this.items.length)
         })
     }
 
@@ -54,31 +64,22 @@ const homeTexts = new TextController({
     duration: duration
 })
 
-const aboutTexts = new TextController({
-    targets: [
-        '#js-headLine-about',
-        '#js-paragraph-about1',
-        '#js-paragraph-about2',
-        '#js-paragraph-about3',
-        '#js-paragraph-about4'
-    ],
-    duration: duration
+
+homeTexts.showSequence().then(() => {
+    // fileInput.style.display = 'inline'
 })
 
-homeTexts.showSameTime()
-
-const homeLinkBtn = document.querySelector('#js-linkHome')
-const aboutLinkBtn = document.querySelector('#js-linkAbout')
-homeLinkBtn.onclick = function () {
-    aboutTexts.hideSameTime().then(() => {
-        homeTexts.showSequence()
-    })
-}
-aboutLinkBtn.onclick = function () {
-    homeTexts.hideSameTime().then(() => {
-        aboutTexts.showSequence()
-    })
-}
+//----------------------------------------
+// audio
+//----------------------------------------
+const audioController = new AudioController({
+    fileInput: '#js-fileInput',
+    playBtn: '#js-playBtn',
+    pauseBtn: '#js-pauseBtn',
+    volume: '#js-volumeController',
+    trackNameArea: '#js-trackName'
+})
+console.log(audioController)
 
 //----------------------------------------
 // util
@@ -157,6 +158,8 @@ cubes.forEach(cube => scene.add(cube))
 let then = 0
 
 const animate = function (now) {
+    if (audioController.isPlaying) console.log(audioController.getFrequencyData())
+
     now *= 0.001
     const deltatime = now - then
     then = now
@@ -170,7 +173,52 @@ const animate = function (now) {
     requestAnimationFrame(animate);
 };
 
-// animate();
+animate();
+
+
+// const audioCTX = new AudioContext()
+// const source = audioCTX.createBufferSource()
+// source.buffer = null;
+
+// const gainNode = audioCTX.createGain()
+// source.connect(gainNode)
+// gainNode.connect(audioCTX.destination)
+
+// const fileInput = document.querySelector('#js-fileInput')
+// const trackNameArea = document.querySelector('#js-trackName')
+// const playBtn = document.querySelector('#js-playBtn')
+// const pauseBtn = document.querySelector('#js-pauseBtn')
+// const volumeController = document.querySelector('#js-volumeController')
+
+// let file = ''
+// let fileName = ''
+// const audio = new Audio()
+
+// playBtn.onclick = (e) => {
+//     pauseBtn.style.display = 'inline'
+//     playBtn.style.display = 'none'
+//     audio.play()
+// }
+
+// pauseBtn.onclick = (e) => {
+//     playBtn.style.display = 'inline'
+//     pauseBtn.style.display = 'none'
+//     audio.pause()
+// }
+// fileInput.oninput = e => {
+//     const file = e.target.files[0]
+//     fileName = file.name
+//     trackNameArea.textContent = fileName
+//     playBtn.style.display = 'inline'
+//     pauseBtn.style.display = 'none'
+//     audio.src = URL.createObjectURL(file)
+//     audio.volume = 0.5
+//     // console.log(e.target.value)
+// }
+
+// volumeController.oninput = e => {
+//     audio.volume = Number(e.target.value) / 100
+// }
 
 // event
 window.onresize = function (e) {
