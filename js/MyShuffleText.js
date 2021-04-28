@@ -1,120 +1,203 @@
-class MyShuffleText {
-    constructor(props) {
-        this.el = null
-        this.duration = props?.duration || 1000
-        this.hideDuration = props?.duration || 500
-        this.fps = 60
-        this.isAnimation = false
-        this.animationId = 0
-        this.startTime = 0
-        this.currentTime = 0
-        this.step = 0
-        this.hideStep = 0
-        this.originalChars = ''
-        this.originalCharsLength = 0
-        this.chars = []
-        this.randomChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-        this.init(props.el)
+(() => {
+
+    class RandomText {
+        constructor() {
+            this.randomChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+        }
+        _getRandomChar() {
+            return this.randomChars[Math.floor(Math.random() * this.randomChars.length)]
+        }
     }
 
-    init(target) {
-        this.el = document.querySelector(target)
-        this.originalChars = this.el.textContent
-        this.originalCharsLength = this.originalChars.length
-        this.step = this.duration / this.originalCharsLength
-        this.hideStep = this.hideDuration / this.originalCharsLength
-        this.el.innerHTML = ''
-        this.originalChars.split('').forEach(char => {
-            const span = document.createElement('span')
-            span.textContent = char
-            this.chars.push(span)
-            this.el.insertAdjacentElement('beforeend', span)
-        })
-    }
+    class MyShuffleText extends RandomText {
+        constructor(props) {
+            super()
+            this.el = null
+            this.duration = props?.duration || 1000
+            this.hideDuration = props?.hideDuration || 1000
+            this.delay = props?.delay || 0
+            this.fps = props?.fps || 60
+            this._init(props)
+        }
 
-    setRandomText() {
-        this.chars.forEach(char => {
-            const randomIndex = Math.floor(Math.random() * this.randomChars.length)
-            char.textContent = this.randomChars[randomIndex]
-        })
-    }
+        _init(props) {
+            this.originalChars = ''
+            this.step = 0
+            this.isAnimation = false
+            this.animationId = 0
+            this.startTime = 0
+            this.currentTime = 0
+            this.el = props.el
+            this._setUp(props.el.textContent)
+        }
 
-    show() {
-        if (this.isAnimation === true) return
-        this.isAnimation = true
-        this.startTime = new Date().getTime()
-        this.animationId = setInterval(() => {
-            this.chars.forEach(char => char.style.display = 'inline')
-            this.onShowInterval()
-        }, this.fps / 1000)
-    }
+        show() {
+            return this._effectStart('start')
+        }
 
+        showInstantly() {
+            this.el.textContent = this.originalChars
+            return new Promise(resolve => resolve(this))
+        }
 
-    onShowInterval() {
-        this.currentTime = new Date().getTime()
-        const pastTime = this.currentTime - this.startTime
-        this.chars.forEach((char, i) => {
-            let c
-            if (pastTime > (this.step * (i + 1))) {
-                c = this.originalChars[i]
-            } else {
-                if (Math.random() > 0.3) {
-                    const randomIndex = Math.floor(Math.random() * this.randomChars.length)
-                    c = this.randomChars[randomIndex]
+        hide() {
+            return this._effectStart('hide')
+        }
+
+        hideInstantly() {
+            this.el.textContent = ' '
+            return new Promise(resolve => resolve(this))
+        }
+
+        reset(text) {
+            this._setUp(text)
+            return this.showInstantly()
+        }
+
+        resetAndShow(text) {
+            this._setUp(text)
+            return this.show()
+        }
+
+        _stop() {
+            this.isAnimation = false
+            clearInterval(this.animationId)
+            this.animationId = 0
+        }
+
+        _effectStart(process) {
+            if (this.isAnimation) return
+            this.isAnimation = true
+            this.startTime = new Date().getTime()
+            const duration = process === 'start' ? this.duration : this.hideDuration
+
+            this.animationId = setInterval(() => {
+                process === 'start' ? this._onShowInterval() : this._onHideInterval()
+            }, 1000 / this.fps)
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(this)
+                }, duration + this.delay)
+            })
+        }
+
+        // _getRandomChar() {
+        //     return this.randomChars[Math.floor(Math.random() * this.randomChars.length)]
+        // }
+
+        _onShowInterval() {
+            this.currentTime = new Date().getTime()
+            const pastTime = this.currentTime - this.startTime
+            let text = this.originalChars.split('').map((char, i) => {
+                if (pastTime < this.duration / 2) {
+                    if (pastTime < this.step * i) {
+                        return ' '
+                    } else {
+                        return this._getRandomChar()
+                    }
                 } else {
-                    c = '-'
+                    if (pastTime > this.duration / 2 + this.step * i) {
+                        return char
+                    } else {
+                        return Math.random() > 0.8 ? '-' : this._getRandomChar()
+                    }
+                }
+            })
+            pastTime > this.duration && this._stop()
+            this.el.textContent = text.join('')
+        }
+
+        _onHideInterval() {
+            this.currentTime = new Date().getTime()
+            const pastTime = this.currentTime - this.startTime
+            let text = this.originalChars.split('').map((char, i) => {
+                if (pastTime < this.hideDuration / 2) {
+                    if (pastTime > this.hideDuration / 2 - this.hideStep * i) {
+                        return Math.random() > 0.9 ? '-' : this._getRandomChar()
+                    } else {
+                        return char
+                    }
+                } else {
+                    if (pastTime > this.hideDuration - this.hideStep * i) {
+                        return ' '
+                    } else {
+                        return Math.random() > 0.9 ? '-' : this._getRandomChar()
+                    }
+                }
+            })
+
+            pastTime > this.hideDuration && this._stop()
+            this.el.textContent = text.join('')
+        }
+
+        _setUp(text) {
+            this._setText(text)
+            this._setStep()
+        }
+
+        _setText(text) {
+            this.originalChars = text
+            this.el.textContent = this.originalChars
+        }
+
+        _setStep() {
+            this.step = Math.floor(this.duration / 2 / this.originalChars.length)
+            this.hideStep = Math.floor(this.hideDuration / 2 / this.originalChars.length)
+        }
+    }
+
+    class TextController {
+        constructor(props) {
+            this.texts = []
+            this._init(props)
+        }
+
+        _init(props) {
+            props.targets.forEach(selector => {
+                switch (selector[0]) {
+                    case '#':
+                        props.el = document.querySelector(selector)
+                        this.texts.push(new MyShuffleText(props))
+                        break
+                    default:
+                        Array.from(document.querySelectorAll(selector))
+                            .forEach(el => {
+                                props.el = el
+                                this.texts.push(new MyShuffleText(props))
+                            })
+                        break
+                }
+            })
+        }
+
+        async repeat(type) {
+            for (let i = 0; i < this.texts.length; i++) {
+                if (i != this.texts.length - 1) {
+                    type === 'show' 
+                        ? await this.texts[i].show() 
+                        : await this.texts[this.texts.length - 1 - i].hide()
+                    continue
+                } else {
+                    return type === 'show' 
+                        ? await this.texts[i].show() 
+                        : await this.texts[this.texts.length - 1 - i].hide()
+                }
+
+            }
+        }
+
+        sync(type) {
+            console.log(type)
+            for (let i = 0; i < this.texts.length; i++) {
+                if (i !== this.texts.length - 1) {
+                    type === 'show' ? this.texts[i].show() : this.texts[i].hide()
+                } else {
+                    return type === 'show' ? this.texts[i].show() : this.texts[i].hide()
                 }
             }
-            char.textContent = c
-            if (pastTime > this.duration) return this.stop()
-        })
+        }
     }
-
-    stop() {
-        this.isAnimation = false
-        clearInterval(this.animationId)
-    }
-
-    hide() {
-        if (this.isAnimation === true) return
-        this.isAnimation = true
-        this.startTime = new Date().getTime()
-        this.animationId = setInterval(() => {
-            this.onHideInterval()
-        }, this.fps / 1000)
-    }
-
-    onHideInterval() {
-        this.currentTime = new Date().getTime()
-        const pastTime = this.currentTime - this.startTime
-        if (pastTime > this.hideDuration) this.stop()
-
-        this.chars.forEach((char, i, o) => {
-            let c
-            const index = this.originalCharsLength - (i + 1)
-            if (pastTime > (this.hideStep * (i + 1))) {
-                o[this.originalCharsLength - (i + 1)].style.display = 'none'
-            } else {
-                const randomIndex = Math.floor(Math.random() * this.randomChars.length)
-                c = this.randomChars[randomIndex]
-                if (Math.random() > 0.5) {
-                    o[0].textContent = '-'
-                } else {
-                    o[0].textContent = this.randomChars[Math.floor(Math.random() * this.randomChars.length)]
-                }
-            }
-            char.textContent = c
-        })
-
-    }
-
-
-
-    step() {
-
-    }
-
-    delete() {
-
-    }
-}
+    window.MyShuffleText = window.MyShuffleText || MyShuffleText
+    window.TextController = window.TextController || TextController
+})()

@@ -156,3 +156,21 @@ label i {
     font-size: 16px;
     color: #fff;
 }
+
+.fileInput-wrapper{
+    transition: .3s;
+}
+
+.file-input-label {
+    margin-bottom: 20px;
+}
+
+.inVisible{
+    opacity: 0;
+    /* display: none; */
+}
+
+.visible{
+    opacity: 1;
+    /* display: inline-block; */
+}
