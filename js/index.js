@@ -19,26 +19,27 @@ const h1 = new MyShuffleText({
     el: document.querySelector('#js-headLine'),
     duration: 1000,
     hideDuration: 1000,
-    // delay: 500,
+    delay: 300,
     fps: 60
 })
 
-// const p = new MyShuffleText({
-//     target: '.js-text'
-// })
 const textController = new TextController({
     targets: ['.js-myText'],
     duration: 1000,
     hideDuration: 1000,
+    delay: 300,
     fps: 60
 })
-console.log(textController)
-h1.show()
-    .then(() => textController.repeat('show'))
-    .then(() => textController.repeat('hide'))
-    .then(() => console.log('yeah'))
 
 const fileInputWrapper = document.querySelector('.fileInput-wrapper')
+
+h1.show()
+    .then(() => textController.repeat('show'))
+    .then(() => textController.sync('hide'))
+    .then(() => textController.sync('show'))
+    .then(() => fileInputWrapper.classList.remove('inVisible'))
+
+
 // const lorem = 'Hello MyshuffleText The World'
 // h1.resetAndShow(lorem)
 //     .then(() => h1.hide())

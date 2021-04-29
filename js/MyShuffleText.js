@@ -15,7 +15,7 @@
             this.el = null
             this.duration = props?.duration || 1000
             this.hideDuration = props?.hideDuration || 1000
-            this.delay = props?.delay || 0
+            this.delay = props?.delay || 100
             this.fps = props?.fps || 60
             this._init(props)
         }
@@ -29,6 +29,7 @@
             this.currentTime = 0
             this.el = props.el
             this._setUp(props.el.textContent)
+            this.hideInstantly()
         }
 
         show() {
@@ -174,13 +175,13 @@
         async repeat(type) {
             for (let i = 0; i < this.texts.length; i++) {
                 if (i != this.texts.length - 1) {
-                    type === 'show' 
-                        ? await this.texts[i].show() 
+                    type === 'show'
+                        ? await this.texts[i].show()
                         : await this.texts[this.texts.length - 1 - i].hide()
                     continue
                 } else {
-                    return type === 'show' 
-                        ? await this.texts[i].show() 
+                    return type === 'show'
+                        ? await this.texts[i].show()
                         : await this.texts[this.texts.length - 1 - i].hide()
                 }
 
