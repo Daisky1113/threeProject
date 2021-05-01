@@ -160,21 +160,26 @@ label i {
 
 .audio-controlle-panel{
   position: absolute;
-
+  width: calc(100% - 48px);
+  bottom: 24px;
   display: flex;
   align-items: center;
-  margin: 24px 0;
   padding: 8px;
   border-radius: 4px;
-  box-shadow: 0 2px 4px #ccc;
+  box-shadow: 0 1px 3px #ccc;
 }
 .audio-controlle-panel i {
   color: #aaa;
   font-size: 24px;
   cursor: pointer;
 }
-.audio-controlle-panel i.la-play{
+.audio-controlle-panel i.la-play,
+.audio-controlle-panel i.la-pause{
   margin: 0 8px;
+}
+
+.audio-controlle-panel i.la-volume-mute{
+  color: #ccc;
 }
 
 .audio-controlle-panel i.la-fast-backward,
@@ -220,13 +225,20 @@ label i {
     /* margin-top: 8px; */
 }
 
-.input-wrapper span{
+.input-wrapper span.effect-type{
     position: absolute;
     top: 0px;
     font-weight: bold;
-    color: #bbb;
     font-size: 12px;
     color: #bbb;
+}
+.input-wrapper span.val{
+    position: absolute;
+    font-size: 14px;
+    color: #999;
+    left: -8px;
+    transform: translateY(calc(50% - 6px));
+    transition: .3s;
 }
 
 .slider {
@@ -235,7 +247,7 @@ label i {
   width: 70%; /* Full-width */
   margin: 0 8px;
   height: 3px; /* Specified height */
-  background: #eee; /* Grey background */
+  background: linear-gradient(to right, #66BAB7 0%, #66BAB7 50%, #eee 50%, #eee 100%);
   outline: none; /* Remove outline */
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
@@ -250,7 +262,7 @@ label i {
 }
 
 .slider.vertical{
-    width: 24px;
+    width: 40px;
     transform: rotate(-90deg);
 }
 
@@ -287,14 +299,16 @@ i.invisible::before{
   display: none;
 }
 
-
+.opacity-zero{
+  opacity: 0;
+}
 
 .inVisible{
-    opacity: 0;
+    display: none;
     /* display: none; */
 }
 
 .visible{
-    opacity: 1;
+    display: inline-block;
     /* display: inline-block; */
 }
