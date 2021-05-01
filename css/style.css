@@ -3,10 +3,6 @@
     font-style: italic;
     box-sizing: border-box;
 }
-input[type=range]{ 
-    -webkit-appearance: none; 
-    
-}
 
 h1 span, p span{
     display: none;
@@ -41,6 +37,7 @@ header{
 
 }
 .contents{
+    position: relative;
     padding: 24px;
     display: flex;
     justify-content: center;
@@ -120,23 +117,7 @@ canvas{
     padding-left: 8px;
 }
 
-.volumeController{
-     -webkit-appearance: none;
-     background: none;
-    color: #000;
-    cursor: pointer;
-    height: 3px;
-    width: 70%;
-    border-radius: 2px;
-    margin: 0 auto;
-    outline: none;
-    background: #999;
-     /* border-radius: 10px; */
-}
 
-.volumeController::-webkit-slider-thumb{
-    background: rgb(255, 139, 139);
-}
 
 input[type="file"] {
   opacity: 0;
@@ -170,6 +151,143 @@ label i {
 .file-input-label {
     margin-bottom: 20px;
 }
+
+*{
+    font-family: optima;
+    font-style: italic;
+    box-sizing: border-box;
+}
+
+.audio-controlle-panel{
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px #ccc;
+}
+.audio-controlle-panel i {
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+}
+.audio-controlle-panel i.la-play{
+  margin: 0 8px;
+}
+
+.audio-controlle-panel i.la-fast-backward,
+.audio-controlle-panel i.la-forward{
+  font-size: 20px;
+}
+
+
+.playbtn-area{
+  display: flex;
+  align-items: center;
+}
+
+.playbtn-area p{
+  margin-left: 16px;
+  color: #999;
+}
+
+.volume-area{
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.effect-area{
+  display: flex;
+  align-items: center;
+}
+
+.effect-area .slider-wrapper{
+  display: flex;
+  flex-direction: column;
+}
+
+.input-wrapper{
+    height: 64px;
+    margin: 0 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* margin-top: 8px; */
+}
+
+.input-wrapper span{
+    position: absolute;
+    top: 0px;
+    font-weight: bold;
+    color: #bbb;
+    font-size: 12px;
+    color: #bbb;
+}
+
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 70%; /* Full-width */
+  margin: 0 8px;
+  height: 3px; /* Specified height */
+  background: #eee; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  /* transform: rotate(-90deg); */
+}
+
+.slider.thumb-dot::-webkit-slider-thumb{
+  width: 16px; /* Set a specific slider handle width */
+  height: 16px; /* Slider handle height */
+  border-radius: 50%;
+}
+
+.slider.vertical{
+    width: 24px;
+    transform: rotate(-90deg);
+}
+
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 8px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #fff; /* Green background */
+  /* border-radius: 50%; */
+  border: 2px solid #aaa;
+  border-radius: 2px;
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 12px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #fff; /* Green background */
+  /* border-radius: 50%; */
+  border: 2px solid #aaa;
+  cursor: pointer; /* Cursor on hover */
+}
+
+.volume-input{
+    width: 30%;
+}
+
+i.invisible::before{
+  display: none;
+}
+
+
 
 .inVisible{
     opacity: 0;

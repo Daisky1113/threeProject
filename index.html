@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="">
     <link rel="stylesheet" href="css/destyle.css">
+    <link rel="stylesheet"
+        href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="lib/three.min.js"></script>
     <script src="lib/Pass.js"></script>
@@ -20,8 +21,6 @@
     <script src="lib/EffectComposer.js"></script>
     <script src="lib/DigitalGlitch.js"></script>
     <script src="lib/GlitchPass.js"></script>
-
-    <script src="https://kit.fontawesome.com/7bff89094e.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -37,32 +36,44 @@
             <div class="text-area">
                 <div class="home">
                     <h1 id="js-headLine" class="">Hello MyShuffleText</h1>
-                    <p class="js-myText">Sed ut perspiciatis, unde omnis iste natus error sit voluptatem </p>
-                    <p class="js-myText">eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae
-                    </p>
-                    <p class="js-myText">voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia</p>
-                    <p class="js-myText">loremipsum</p>
+
                     <div class="fileInput-wrapper inVisible">
                         <label class="file-input-label " for="">
                             <input id="js-fileInput" accept="audio/*" class="file-input" type="file">Upload Your MP3
                             File
                         </label>
-                        <!-- <div class="input-area">
-                            <div class="audio-controller">
-                                <div>
-                                    <button>
-                                        <i id="js-playBtn" class="play fas fa-play"></i>
-                                        <i id="js-pauseBtn" class="pause fas fa-pause"></i>
-                                    </button>
-                                    <p id="js-trackName" class="track-name"></p>
-                                </div>
-                                <div>
-                                    <i id="js-volumeBtn" class="fas fa-volume-up"></i>
-                                    <input id="js-volumeController" class="volumeController" type="range" min="0"
-                                        max="100">
-                                </div>
+                    </div>
+                    <div class="audio-controlle-panel">
+                        <div class="playbtn-area">
+                            <!-- <i class="js-fastBack las la-fast-backward"></i> -->
+                            <i class="js-play las la-play"></i>
+                            <!-- <i class="js-playForward las la-forward"></i> -->
+                            <i class="js-pause invisible las la-pause"></i>
+                            <p class="track-name">hoge</p>
+                        </div>
+                        <div class="volume-area">
+                            <i class="las la-volume-up"></i>
+                            <i class="las invisible la-volume-mute"></i>
+                            <input class="slider thumb-dot" type="range" value="0.5" min="0" max="1" step="0.01">
+                        </div>
+                        <div class="effect-area">
+                            <div class="input-wrapper">
+                                <input class="slider vertical" type="range" value="0.5" min="0" max="1" step="0.01">
+                                <span>Low</span>
                             </div>
-                        </div> -->
+                            <div class="input-wrapper">
+                                <input class="slider vertical" type="range" value="0.5" min="0" max="1" step="0.01">
+                                <span>Mid</span>
+                            </div>
+                            <div class="input-wrapper">
+                                <input class="slider vertical" type="range" value="0.5" min="0" max="1" step="0.01">
+                                <span>High</span>
+                            </div>
+                            <div class="input-wrapper">
+                                <input class="slider vertical" type="range" value="0.5" min="0" max="1" step="0.01">
+                                <span>BPM</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -172,7 +172,7 @@
             })
         }
 
-        async repeat(type) {
+        async seq(type) {
             for (let i = 0; i < this.texts.length; i++) {
                 if (i != this.texts.length - 1) {
                     type === 'show'
