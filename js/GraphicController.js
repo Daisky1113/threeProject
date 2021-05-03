@@ -11,6 +11,7 @@ class GraphicController {
         this.light = null
         this.width = window.innerWidth
         this.height = window.innerHeight
+        this.isCircleTiming = false
         this.init()
     }
 
@@ -21,6 +22,7 @@ class GraphicController {
         // this.setCube()
         this.circleArr = []
         this.setLine()
+        this.setTestCube()
         this.resizeHandler()
     }
 
@@ -65,6 +67,37 @@ class GraphicController {
         const material = new THREE.MeshLambertMaterial()
         this.centerCube = new THREE.Mesh(geometry, material)
         this.scene.add(this.centerCube)
+    }
+
+    setTestCube() {
+        const geometry = new THREE.BoxGeometry(50, 50, 50)
+        const material = new THREE.MeshLambertMaterial()
+        this.lowCube = new THREE.Mesh(geometry, material)
+        this.midCube = new THREE.Mesh(geometry, material)
+        this.highCube = new THREE.Mesh(geometry, material)
+        this.lowCube.position.x = -300
+        this.midCube.position.x = 0
+        this.highCube.position.x = 300
+        this.scene.add(this.lowCube)
+        this.scene.add(this.midCube)
+        this.scene.add(this.highCube)
+    }
+
+    updateTestCube(val1, val2, val3) {
+        this.lowCube.scale.x = val1
+        this.lowCube.scale.y = val1
+        this.lowCube.scale.z = val1
+        this.lowCube.rotation.z += 0.01
+
+        this.midCube.scale.x = val2
+        this.midCube.scale.y = val2
+        this.midCube.scale.z = val2
+        this.midCube.rotation.z += 0.01
+
+        this.highCube.scale.z = val3
+        this.highCube.scale.z = val3
+        this.highCube.scale.z = val3
+        this.highCube.rotation.z += 0.01
     }
 
     setLine() {

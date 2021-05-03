@@ -5,7 +5,7 @@ const audioController = new AudioController()
 //----------------------------------------
 // graphic
 //----------------------------------------
-// const graphicController = new GraphicController()
+const graphicController = new GraphicController()
 //----------------------------------------
 // dom
 //----------------------------------------
@@ -33,6 +33,7 @@ const pauseBtn = document.querySelector('.js-pause')
 const volumeBtn = document.querySelector('.js-volumeUp')
 const muteBtn = document.querySelector('.js-volumeMute')
 const fileInputWrapper = document.querySelector('.fileInput-wrapper')
+const titleArea = document.querySelector('#js-titleArea')
 
 const inputs = {
     file: document.querySelector('#js-fileInput'),
@@ -55,6 +56,7 @@ handleBtnEvnts = () => {
     playBtn.addEventListener('click', function () {
         playBtn.classList.add(DISABLE_CLASS_NAME)
         pauseBtn.classList.remove(DISABLE_CLASS_NAME)
+        titleArea.classList.add('fix')
         audioController.play()
     })
 
@@ -83,6 +85,8 @@ const handleInputEvents = () => {
 
     inputs.range.horizonatal.volume.addEventListener('input', e => {
         setInputRangeStyle(e.target, e.target.value)
+        audioController.setVolume(e.target.value / 100)
+        volume = e.target.value
     })
 
     inputs.range.verticalWrapper.forEach(el => {
@@ -143,27 +147,42 @@ h1.show()
 //----------------------------------------
 // animation
 //----------------------------------------
-// let then = 0
-// let frameCount = 0
+let then = 0
+let frameCount = 0
 
-// const animate = function (now) {
-//     frameCount++
-//     requestAnimationFrame(animate);
-//     graphicController.rendering()
-//     if (audioController.isPlaying) {
-//         const data = audioController.getFrequencyData()
-//         const avrage = data.reduce((a, b) => a + b) / data.length
-//         // graphicController.updateCenterCubeScale(avrage / 10)
-//         graphicController.updateLine(data)
-//         if (avrage > 70) {
-//             graphicController.createCircle()
-//         }
-//         // graphicController.updateLine(data)
-//     }
-//     if (graphicController.circleArr.length > 0) {
-//         graphicController.updateEachCircle(2)
-//     }
+const animate = function (now) {
+    frameCount++
+    requestAnimationFrame(animate);
+    graphicController.rendering()
+    if (audioController.isPlaying) {
+        const data = audioController.getFrequencyData()
+        const lowData = data.slice(0, data.length / 3)
+        const midData = data.slice(data.length / 3, data.length / 3 * 2)
+        const higheData = data.slice(data.length - 30)
+        const lowVal = lowData.reduce((a, b) => a + b) / lowData.length
+        const midVal = midData.reduce((a, b) => a + b) / midData.length
+        const higheVal = higheData.reduce((a, b) => a + b) / higheData.length
+        // const avrage = data.reduce((a, b) => a + b) / data.length
+        // graphicController.updateCenterCubeScale(avrage / 10)
+        graphicController.updateLine(data)
 
-// };
+        graphicController.updateTestCube(lowVal / 100, midVal / 100, higheVal / 80)
+        // falseからtrueになった時だけ
+        if (midVal > 70) {
+            graphicController.isCircleTiming = true
+        } else {
+            graphicController.isCircleTiming = false
+        }
 
-// animate()
+        if (graphicController.isCircleTiming) {
+            graphicController.createCircle()
+        }
+        // graphicController.updateLine(data)
+    }
+    if (graphicController.circleArr.length > 0) {
+        graphicController.updateEachCircle(2)
+    }
+
+};
+
+animate()

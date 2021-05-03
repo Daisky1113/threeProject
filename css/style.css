@@ -37,7 +37,7 @@ header{
 
 }
 .contents{
-    position: relative;
+    /* position: relative; */
     padding: 24px;
     display: flex;
     justify-content: center;
@@ -58,11 +58,13 @@ header{
     margin-bottom: 16px;
     color: #666;
     font-style: italic;
+    transition: .5s;
 }
-.text-area p#js-paragraph{
+.text-area p{
     font-size: 24px;
     color: #999;
     margin-bottom: 48px;
+    transition: .5s;
 }
 .text-area p.js-myText{
     font-size: 18px;
@@ -318,4 +320,23 @@ i.invisible::before{
 
 .left-zero{
     left: 0;
+}
+
+.title-area{
+  position: relative;
+  transition: .5s;
+}
+
+.title-area.fix {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.title-area.fix h1{
+  font-size: 36px;
+}
+
+.title-area.fix p{
+  font-size: 12px;
 }
