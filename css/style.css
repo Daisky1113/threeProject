@@ -55,7 +55,7 @@ header{
 
 .text-area h1{
     font-size: 120px;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     color: #666;
     font-style: italic;
 }
@@ -271,24 +271,23 @@ label i {
 }
 
 .slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
+  -webkit-appearance: none;
   appearance: none;
-  width: 8px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #fff; /* Green background */
-  /* border-radius: 50%; */
+  width: 8px;
+  height: 25px;
+  background: #fff; 
   border: 2px solid #aaa;
   border-radius: 2px;
-  cursor: pointer; /* Cursor on hover */
+  cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
-  width: 12px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #fff; /* Green background */
+  width: 12px;
+  height: 25px;
+  background: #fff;
   /* border-radius: 50%; */
   border: 2px solid #aaa;
-  cursor: pointer; /* Cursor on hover */
+  cursor: pointer;
 }
 
 .volume-input{
