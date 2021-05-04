@@ -14,16 +14,16 @@ const OPACITY_ZERO = 'opacity-zero'
 let volume = 50
 const h1 = new MyShuffleText({
     el: document.querySelector('#js-headLine'),
-    duration: 1000,
-    hideDuration: 1000,
+    duration: 600,
+    hideDuration: 600,
     delay: 300,
     fps: 60
 })
 
 const p = new MyShuffleText({
     el: document.querySelector('#js-paragraph'),
-    duration: 1000,
-    hideDuration: 1000,
+    duration: 600,
+    hideDuration: 600,
     delay: 300,
     fps: 60
 })
@@ -34,6 +34,7 @@ const volumeBtn = document.querySelector('.js-volumeUp')
 const muteBtn = document.querySelector('.js-volumeMute')
 const fileInputWrapper = document.querySelector('.fileInput-wrapper')
 const titleArea = document.querySelector('#js-titleArea')
+const audioControllePanel = document.querySelector('.audio-controlle-panel')
 
 const inputs = {
     file: document.querySelector('#js-fileInput'),
@@ -57,6 +58,7 @@ handleBtnEvnts = () => {
         playBtn.classList.add(DISABLE_CLASS_NAME)
         pauseBtn.classList.remove(DISABLE_CLASS_NAME)
         titleArea.classList.add('fix')
+        fileInputWrapper.classList.add('moveBottom')
         audioController.play()
     })
 
@@ -114,6 +116,8 @@ const handleFileEvent = () => {
         const creatorName = trackInfo?.creator || bar
         h1.resetAndShow(trackName)
         p.resetAndShow(creatorName)
+        audioControllePanel.classList.contains(OPACITY_ZERO) && audioControllePanel.classList.remove(OPACITY_ZERO)
+        console.log(audioController)
         audioController.loadTrack(file)
     }
 }
@@ -139,7 +143,7 @@ const trimTrackInfo = text => {
 
 h1.show()
     .then(() => p.show())
-    .then(() => fileInputWrapper.classList.remove(DISABLE_CLASS_NAME))
+    .then(() => fileInputWrapper.classList.remove(OPACITY_ZERO))
 
 
 
