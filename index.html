@@ -38,19 +38,22 @@
                     <h1 id="js-headLine">Music</h1>
                     <p id="js-paragraph">Select Your MP3 File by Youtube Audio Library</p>
                 </div>
-                <div class="fileInput-wrapper opacity-zero">
+                <!-- <div class="fileInput-wrapper opacity-zero"> -->
+                <div class="fileInput-wrapper">
                     <label class="file-input-label " for="">
                         <input id="js-fileInput" accept="audio/*" class="file-input" type="file">Upload Your MP3
                         File
                     </label>
                 </div>
-                <div class="audio-controlle-panel opacity-zero">
+                <!-- <div class="audio-controlle-panel opacity-zero"> -->
+                <div class="audio-controlle-panel">
                     <div class="playbtn-area">
                         <!-- <i class="js-fastBack las la-fast-backward"></i> -->
                         <i class="js-play las la-play"></i>
                         <i class="js-pause inVisible las la-pause"></i>
                         <!-- <i class="js-playForward las la-forward"></i> -->
                         <p class="track-name">hoge</p>
+                        <i class="js-loop las la-redo-alt"></i>
                     </div>
                     <div class="volume-area">
                         <i class="js-volumeUp las la-volume-up"></i>
@@ -61,9 +64,9 @@
                     <div class="effect-area">
                         <div class="input-wrapper js-inputVerticalWrapper">
                             <span class="val opacity-zero">50</span>
-                            <input id="js-lowPathInput" class="js-inputRange slider vertical" type="range" value="50"
+                            <input id="js-lowPassInput" class="js-inputRange slider vertical" type="range" value="50"
                                 min="0" max="100" step="1">
-                            <span class="effect-type">Low</span>
+                            <span id="js-lowpassBtn" class="effect-btn effect-type">Low</span>
                         </div>
                         <!-- <div class="input-wrapper js-inputVerticalWrapper">
                             <span class="val opacity-zero">50</span>
@@ -73,9 +76,9 @@
                         </div> -->
                         <div class="input-wrapper js-inputVerticalWrapper">
                             <span class="val opacity-zero">50</span>
-                            <input id="highPathInput" class="js-inputRange slider vertical" type="range" value="50"
+                            <input id="js-highPassInput" class="js-inputRange slider vertical" type="range" value="50"
                                 min="0" max="100" step="1">
-                            <span class="effect-type">High</span>
+                            <span id="js-highpassBtn" class="effect-btn effect-type">High</span>
                         </div>
                         <!-- <div class="input-wrapper js-inputVerticalWrapper">
                             <span class="val opacity-zero">50</span>

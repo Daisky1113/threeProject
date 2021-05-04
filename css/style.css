@@ -196,6 +196,14 @@ label i {
   font-size: 20px;
 }
 
+.audio-controlle-panel .la-redo-alt{
+    font-size: 18px;
+    margin-left: 16px;
+    margin-right: 24px;
+}
+
+.audio-controlle-panel {
+}
 
 .playbtn-area{
   display: flex;
@@ -245,7 +253,7 @@ label i {
     position: absolute;
     font-size: 14px;
     color: #999;
-    left: -8px;
+    left: -24px;
     transform: translateY(calc(50% - 6px));
     transition: .3s;
 }
@@ -352,4 +360,11 @@ i.invisible::before{
     position: absolute;
     bottom: 120px;
     /* transform: translateY(180px); */
+}
+.effect-btn{
+    cursor: pointer;
+}
+
+.active{
+    color: #66BAB7 !important;
 }

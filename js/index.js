@@ -28,10 +28,17 @@ const p = new MyShuffleText({
     fps: 60
 })
 
+const trackNameArea = document.querySelector('.track-name')
+
+
 const playBtn = document.querySelector('.js-play')
 const pauseBtn = document.querySelector('.js-pause')
+const loopBtn = document.querySelector('.js-loop')
 const volumeBtn = document.querySelector('.js-volumeUp')
 const muteBtn = document.querySelector('.js-volumeMute')
+const lowpassBtn = document.querySelector('#js-lowpassBtn')
+const highpassBtn = document.querySelector('#js-highpassBtn')
+
 const fileInputWrapper = document.querySelector('.fileInput-wrapper')
 const titleArea = document.querySelector('#js-titleArea')
 const audioControllePanel = document.querySelector('.audio-controlle-panel')
@@ -55,11 +62,13 @@ const setInputRangeStyle = (target, val) => {
 
 handleBtnEvnts = () => {
     playBtn.addEventListener('click', function () {
-        playBtn.classList.add(DISABLE_CLASS_NAME)
-        pauseBtn.classList.remove(DISABLE_CLASS_NAME)
-        titleArea.classList.add('fix')
-        fileInputWrapper.classList.add('moveBottom')
-        audioController.play()
+        if (audioController.source) {
+            playBtn.classList.add(DISABLE_CLASS_NAME)
+            pauseBtn.classList.remove(DISABLE_CLASS_NAME)
+            titleArea.classList.add('fix')
+            fileInputWrapper.classList.add('moveBottom')
+            audioController.play()
+        }
     })
 
     pauseBtn.addEventListener('click', function () {
@@ -68,18 +77,48 @@ handleBtnEvnts = () => {
         audioController.pause()
     })
 
+    loopBtn.addEventListener('click', function () {
+        loopBtn.classList.contains('active')
+            ? loopBtn.classList.remove('active')
+            : loopBtn.classList.add('active')
+        if (audioController.source) audioController.toggleLoop()
+    })
+
     volumeBtn.addEventListener('click', function () {
         volumeBtn.classList.add(DISABLE_CLASS_NAME)
         muteBtn.classList.remove(DISABLE_CLASS_NAME)
         inputs.range.horizonatal.volume.value = 0
         setInputRangeStyle(inputs.range.horizonatal.volume, 0)
+        audioController.mute()
     })
 
     muteBtn.addEventListener('click', function () {
+        const volume = audioController.getVolume()
         volumeBtn.classList.remove(DISABLE_CLASS_NAME)
         muteBtn.classList.add(DISABLE_CLASS_NAME)
-        inputs.range.horizonatal.volume.value = volume
-        setInputRangeStyle(inputs.range.horizonatal.volume, volume)
+        inputs.range.horizonatal.volume.value = volume * 100
+        audioController.setVolume(volume)
+        setInputRangeStyle(inputs.range.horizonatal.volume, volume * 100)
+    })
+
+    lowpassBtn.addEventListener('click', function () {
+        lowpassBtn.classList.contains('active')
+            ? lowpassBtn.classList.remove('active')
+            : lowpassBtn.classList.add('active')
+        if (audioController.source) {
+            audioController.toggleLowpassState()
+            audioController.toggleLowpassFilter()
+        }
+    })
+
+    highpassBtn.addEventListener('click', function () {
+        highpassBtn.classList.contains('active')
+            ? highpassBtn.classList.remove('active')
+            : highpassBtn.classList.add('active')
+        if (audioController.source) {
+            audioController.toggleHighpassState()
+            audioController.toggleHighpassFilter()
+        }
     })
 }
 
@@ -97,7 +136,21 @@ const handleInputEvents = () => {
         input.addEventListener('input', e => {
             valArea.classList.remove(OPACITY_ZERO)
             setInputRangeStyle(e.target, e.target.value)
-            valArea.textContent = e.target.value
+            if (audioController.source) {
+                switch (input.id) {
+                    case 'js-lowPassInput':
+                        const lowVal = Math.floor(e.target.value * 8.8)
+                        valArea.textContent = lowVal
+                        audioController.setLowpassVal(lowVal)
+                        break
+                    case 'js-highPassInput':
+                        const highVal = Math.floor(e.target.value * 8.8)
+                        valArea.textContent = 1440 + highVal
+                        console.log(valArea.textContent)
+                        audioController.setHighpassVal(1440 + highVal)
+                        break
+                }
+            }
         })
 
         input.addEventListener('change', () => {
@@ -106,6 +159,8 @@ const handleInputEvents = () => {
             }, 1000)
         })
     })
+
+
 }
 
 const handleFileEvent = () => {
@@ -114,10 +169,13 @@ const handleFileEvent = () => {
         const trackInfo = trimTrackInfo(file.name)
         const trackName = trackInfo?.trackName || foo
         const creatorName = trackInfo?.creator || bar
+        playBtn.classList.remove(DISABLE_CLASS_NAME)
+        pauseBtn.classList.add(DISABLE_CLASS_NAME)
         h1.resetAndShow(trackName)
         p.resetAndShow(creatorName)
-        audioControllePanel.classList.contains(OPACITY_ZERO) && audioControllePanel.classList.remove(OPACITY_ZERO)
-        console.log(audioController)
+        trackNameArea.textContent = trackName
+        // audioControllePanel.classList.contains(OPACITY_ZERO) && audioControllePanel.classList.remove(OPACITY_ZERO)
+        audioController.stop()
         audioController.loadTrack(file)
     }
 }
@@ -143,7 +201,7 @@ const trimTrackInfo = text => {
 
 h1.show()
     .then(() => p.show())
-    .then(() => fileInputWrapper.classList.remove(OPACITY_ZERO))
+// .then(() => fileInputWrapper.classList.remove(OPACITY_ZERO))
 
 
 
