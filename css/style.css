@@ -176,6 +176,7 @@ label i {
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 4px;
   box-shadow: 0 1px 3px #ccc;
+  transition: .3s;
 }
 .audio-controlle-panel i {
   color: #aaa;
@@ -367,4 +368,8 @@ i.invisible::before{
 
 .active{
     color: #66BAB7 !important;
+}
+
+input:disabled{
+    color: #eee;
 }

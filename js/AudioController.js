@@ -4,15 +4,16 @@ class AudioController {
         this.source = null
         this.gainNode = null
         this.analyzerNode = null
-        this.ffsize = 256
-        this.fbc = 0
+        this.ffsize = 2048
+        this.spectrumSize = 64
         this.isPlaying = false
         this.loop = false
         this.volume = 0.5
         this.lowpassVal = 440
-        this.highpassVal = 1244
+        this.highpassVal = 880
         this.isLowpass = false
         this.isHighepass = false
+        this.prevFrequencyData = new Uint8Array(this.spectrumSize);
     }
 
     play() {
@@ -111,6 +112,7 @@ class AudioController {
     }
 
     setHighpassVal(val) {
+        console.log(val)
         this.highpassFilter.frequency.value = val
     }
 
@@ -150,15 +152,12 @@ class AudioController {
         this.highpassFilter = this.ctx.createBiquadFilter()
         this.highpassFilter.type = 'highpass'
         this.highpassFilter.frequency.value = this.highpassVal
+
         this.analyzerNode = this.ctx.createAnalyser()
+        this.analyzerNode.smoothingTimeConstant = 0.7
         this.analyzerNode.fftSize = this.ffsize
-        this.fbc = this.analyzerNode.frequencyBinCount
-        this.freqByteData = new Uint8Array(this.fbc);
+        this.spectrum = new Uint8Array(this.spectrumSize);
         this.source.connect(this.gainNode)
-        // this.source.connect(this.highpassFilter)
-        // this.highpassFilter.connect(this.gainNode)
-        // this.source.connect(this.lowpassFilter)
-        // this.lowpassFilter.connect(this.gainNode)
 
         this.gainNode.connect(this.analyzerNode)
         this.analyzerNode.connect(this.ctx.destination)
@@ -168,8 +167,20 @@ class AudioController {
     }
 
     getFrequencyData() {
-        this.analyzerNode.getByteFrequencyData(this.freqByteData)
-        return this.freqByteData
+        this.analyzerNode.getByteFrequencyData(this.spectrum)
+        return this.spectrum
+    }
+
+    getFrequencyDataBy4() {
+        const arr = []
+        for (let i = 0; i < this.spectrum.length; i += 4) {
+            let total = 0
+            for (let j = 0; j < 4; j++) {
+                total += this.spectrum[i + j]
+            }
+            arr.push(Math.floor(total / 4))
+        }
+        return arr
     }
 
     getFrequencyDataAverage() {

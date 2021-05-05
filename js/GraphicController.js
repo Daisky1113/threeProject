@@ -12,6 +12,9 @@ class GraphicController {
         this.width = window.innerWidth
         this.height = window.innerHeight
         this.isCircleTiming = false
+        this.round = []
+        this.fixMesh = []
+        this.roundRadius = 500
         this.init()
     }
 
@@ -21,9 +24,9 @@ class GraphicController {
         this.lightInit()
         // this.setCube()
         this.circleArr = []
-        this.setLine()
-        this.setTestCube()
-        this.resizeHandler()
+        // this.setTestCube()
+        // this.resizeHandler()
+        this.createRound(64, this.roundRadius)
     }
 
     cameraInit() {
@@ -56,7 +59,7 @@ class GraphicController {
     }
 
     lightInit() {
-        this.light = new THREE.PointLight('#FEDFE1')
+        this.light = new THREE.PointLight('#FFF')
         this.light.position.set(0, 0, 200)
 
         this.scene.add(this.light)
@@ -100,13 +103,13 @@ class GraphicController {
         this.highCube.rotation.z += 0.01
     }
 
-    setLine() {
+    setLine(lineLength) {
         this.lines = []
-        const geometry = new THREE.BoxGeometry(10, 10, 10);
+        const geometry = new THREE.BoxGeometry(8, 8, 8);
         const material = new THREE.MeshLambertMaterial()
-        for (let i = 0; i < 256; i++) {
+        for (let i = 0; i < lineLength; i++) {
             const mesh = new THREE.Mesh(geometry, material)
-            mesh.position.x = i * 10 - 126 * 10
+            mesh.position.x = (i * 10) - (lineLength / 2 * 10)
             this.lines.push(mesh)
             this.scene.add(mesh)
         }
@@ -116,9 +119,70 @@ class GraphicController {
         for (let i = 0; i < this.lines.length; i++) {
             // this.lines[i].scale.x = data[i] / 10
             const mesh = this.lines[i]
-            mesh.scale.y = data[i] / 10
+            mesh.scale.y = data[i] / 5
             // this.lines[i].scale.z = data[i] / 10
         }
+    }
+
+    createRound(length, r) {
+        const geometry = new THREE.SphereGeometry(5, 32, 32);
+        const baseDig = 360 / length
+        const baseColor = 1 / length
+        for (let i = 0; i < length; i++) {
+            const dig = baseDig * (i + 1)
+            const rad = dig * Math.PI / 180
+            const color = baseColor * i
+            const material = new THREE.MeshBasicMaterial()
+            material.color.setHSL(color, 0.98, 0.98)
+            const mesh = new THREE.Mesh(geometry, material)
+            mesh.position.x = Math.cos(rad) * this.roundRadius
+            mesh.position.z = Math.sin(rad) * this.roundRadius
+            this.round.push(mesh)
+            this.scene.add(mesh)
+        }
+    }
+
+    updateRoundY(deg, r) {
+        const baseDig = 360 / this.round.length
+        this.round.forEach((mesh, i) => {
+            if (i % 2 == 0) {
+                mesh.position.y += Math.sin((baseDig * i + deg) * Math.PI / 180) * r
+            } else {
+                mesh.position.y += Math.sin((baseDig * i + deg) * Math.PI / 180) * r * -1
+            }
+            mesh.position.x = Math.sin((baseDig * i + deg) * Math.PI / 180) * this.roundRadius / 2
+            mesh.position.z = Math.sin((baseDig * i + deg) * Math.PI / 180) * this.roundRadius / 2
+        })
+    }
+
+    setRoundRadius(val) {
+        this.roundRadius = val
+    }
+
+    updateRoundScale(prevData, data) {
+        this.round.forEach((mesh, i) => {
+            mesh.scale.x = data[i] / 100
+            mesh.scale.y = data[i] / 100
+            mesh.scale.z = data[i] / 100
+            if (data[i] > 126 && data[i] > prevData[i] * 1.2) {
+                const geometry = new THREE.SphereGeometry(5, 32, 32);
+                const material = new THREE.MeshBasicMaterial()
+                const meshHSL = mesh.material.color.getHSL({})
+                material.color.setHSL(meshHSL.h, data[i] / 256, meshHSL.l - Math.random() * Math.random() * Math.random() * Math.random())
+                const copyMesh = new THREE.Mesh(geometry, material)
+                copyMesh.position.x = mesh.position.x * Math.random()
+                copyMesh.position.y = mesh.position.y * Math.random()
+                copyMesh.position.z = mesh.position.z * Math.random()
+                copyMesh.scale.x = mesh.scale.x
+                copyMesh.scale.y = mesh.scale.y
+                copyMesh.scale.z = mesh.scale.z
+                this.scene.add(copyMesh)
+                setTimeout(() => {
+                    this.scene.remove(copyMesh)
+                }, 1000)
+            }
+        })
+        // this.prevFrequencyData = data
     }
 
     createCircle() {

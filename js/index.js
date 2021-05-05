@@ -68,6 +68,7 @@ handleBtnEvnts = () => {
             titleArea.classList.add('fix')
             fileInputWrapper.classList.add('moveBottom')
             audioController.play()
+            animate()
         }
     })
 
@@ -75,6 +76,7 @@ handleBtnEvnts = () => {
         playBtn.classList.remove(DISABLE_CLASS_NAME)
         pauseBtn.classList.add(DISABLE_CLASS_NAME)
         audioController.pause()
+        cancelAnimationFrame(animationId)
     })
 
     loopBtn.addEventListener('click', function () {
@@ -127,27 +129,27 @@ const handleInputEvents = () => {
     inputs.range.horizonatal.volume.addEventListener('input', e => {
         setInputRangeStyle(e.target, e.target.value)
         audioController.setVolume(e.target.value / 100)
-        volume = e.target.value
+        graphicController.setRoundRadius(e.target.value * 10)
     })
 
     inputs.range.verticalWrapper.forEach(el => {
         const valArea = el.querySelector('.val')
         const input = el.querySelector('.js-inputRange')
+
         input.addEventListener('input', e => {
             valArea.classList.remove(OPACITY_ZERO)
             setInputRangeStyle(e.target, e.target.value)
             if (audioController.source) {
                 switch (input.id) {
                     case 'js-lowPassInput':
-                        const lowVal = Math.floor(e.target.value * 8.8)
-                        valArea.textContent = lowVal
-                        audioController.setLowpassVal(lowVal)
+                        const lowVal = Math.floor(e.target.value * 4 - 200)
+                        valArea.textContent = audioController.lowpassVal + lowVal
+                        audioController.setLowpassVal(audioController.lowpassVal + lowVal)
                         break
                     case 'js-highPassInput':
-                        const highVal = Math.floor(e.target.value * 8.8)
-                        valArea.textContent = 1440 + highVal
-                        console.log(valArea.textContent)
-                        audioController.setHighpassVal(1440 + highVal)
+                        const highVal = Math.floor(e.target.value * 4 - 200)
+                        valArea.textContent = audioController.highpassVal + highVal
+                        audioController.setHighpassVal(audioController.highpassVal + highVal)
                         break
                 }
             }
@@ -159,8 +161,6 @@ const handleInputEvents = () => {
             }, 1000)
         })
     })
-
-
 }
 
 const handleFileEvent = () => {
@@ -174,7 +174,7 @@ const handleFileEvent = () => {
         h1.resetAndShow(trackName)
         p.resetAndShow(creatorName)
         trackNameArea.textContent = trackName
-        // audioControllePanel.classList.contains(OPACITY_ZERO) && audioControllePanel.classList.remove(OPACITY_ZERO)
+        audioControllePanel.classList.contains(OPACITY_ZERO) && audioControllePanel.classList.remove(OPACITY_ZERO)
         audioController.stop()
         audioController.loadTrack(file)
     }
@@ -201,48 +201,68 @@ const trimTrackInfo = text => {
 
 h1.show()
     .then(() => p.show())
-// .then(() => fileInputWrapper.classList.remove(OPACITY_ZERO))
+    .then(() => fileInputWrapper.classList.remove(OPACITY_ZERO))
 
 
 
-
+// graphicController.setLine(audioController.spectrumSize)
 //----------------------------------------
 // animation
 //----------------------------------------
 let then = 0
 let frameCount = 0
-
+let animationId = 0
 const animate = function (now) {
     frameCount++
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
     graphicController.rendering()
+    graphicController.updateRoundY(frameCount, 2)
     if (audioController.isPlaying) {
-        const data = audioController.getFrequencyData()
-        const lowData = data.slice(0, data.length / 3)
-        const midData = data.slice(data.length / 3, data.length / 3 * 2)
-        const higheData = data.slice(data.length - 30)
-        const lowVal = lowData.reduce((a, b) => a + b) / lowData.length
-        const midVal = midData.reduce((a, b) => a + b) / midData.length
-        const higheVal = higheData.reduce((a, b) => a + b) / higheData.length
-        // const avrage = data.reduce((a, b) => a + b) / data.length
-        // graphicController.updateCenterCubeScale(avrage / 10)
-        graphicController.updateLine(data)
-
-        graphicController.updateTestCube(lowVal / 100, midVal / 100, higheVal / 80)
-        // falseからtrueになった時だけ
-        if (midVal > 70) {
-            graphicController.isCircleTiming = true
+        if (frameCount === 1) audioController.prevFrequencyData = audioController.getFrequencyData().slice(0)
+        if (frameCount % 60 == 0) {
+            audioController.prevFrequencyData = audioController.getFrequencyData().slice(0)
         } else {
-            graphicController.isCircleTiming = false
+            const data = audioController.getFrequencyData()
+            // if (frameCount % 100 === 0) {
+            //     console.log(audioController.prevFrequencyData[0])
+            //     console.log(data[0])
+            //     console.log(graphicController.fixMesh)
+            //     // console.log(frameCount)
+            //     // console.log(audioController.analyzerNode.frequencyBinCount)
+            //     // const data = audioController.getFrequencyData()
+            //     // console.log(data)
+            //     // console.log(data.length)
+            // }
+            // const lowData = data.slice(0, data.length / 3)
+            // const midData = data.slice(data.length / 3, data.length / 3 * 2)
+            // const higheData = data.slice(data.length - 30)
+            // const lowVal = lowData.reduce((a, b) => a + b) / lowData.length
+            // const midVal = midData.reduce((a, b) => a + b) / midData.length
+            // const higheVal = higheData.reduce((a, b) => a + b) / higheData.length
+            // const avrage = data.reduce((a, b) => a + b) / data.length
+            // graphicController.updateCenterCubeScale(avrage / 10)
+            // graphicController.updateLine(data)
+            graphicController.updateRoundScale(audioController.prevFrequencyData, data)
+            // 半分より大きくて、前回の値より２割大きければ生成する
+            // console.log(data)
+            // console.log(audioController.getFrequencyDataBy4())
+            // graphicController.updateTestCube(lowVal / 100, midVal / 100, higheVal / 80)
+            // falseからtrueになった時だけ
+            // if (midVal > 70) {
+            //     graphicController.isCircleTiming = true
+            // } else {
+            //     graphicController.isCircleTiming = false
+            // }
+
+            // if (graphicController.isCircleTiming) {
+            //     graphicController.createCircle()
+            // }
+            // graphicController.updateLine(data)
         }
 
-        if (graphicController.isCircleTiming) {
-            graphicController.createCircle()
-        }
-        // graphicController.updateLine(data)
-    }
-    if (graphicController.circleArr.length > 0) {
-        graphicController.updateEachCircle(2)
+        // if (graphicController.circleArr.length > 0) {
+        //     graphicController.updateEachCircle(2)
+        // }
     }
 
 };
