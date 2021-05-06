@@ -15,8 +15,6 @@ class GraphicController {
         this.round = []
         this.fixMesh = []
         this.roundRadius = 500
-        this.sphereGeometry = new THREE.SphereGeometry(5, 32, 32)
-        this.material = new THREE.MeshBasicMaterial()
         this.init()
     }
 
@@ -127,15 +125,16 @@ class GraphicController {
     }
 
     createRound(length, r) {
+        const geometry = new THREE.SphereGeometry(5, 32, 32);
         const baseDig = 360 / length
         const baseColor = 1 / length
         for (let i = 0; i < length; i++) {
             const dig = baseDig * (i + 1)
             const rad = dig * Math.PI / 180
             const color = baseColor * i
-            const material = this.material
+            const material = new THREE.MeshBasicMaterial()
             material.color.setHSL(color, 0.98, 0.98)
-            const mesh = new THREE.Mesh(this.sphereGeometry, material)
+            const mesh = new THREE.Mesh(geometry, material)
             mesh.position.x = Math.cos(rad) * this.roundRadius
             mesh.position.z = Math.sin(rad) * this.roundRadius
             this.round.push(mesh)
@@ -163,10 +162,11 @@ class GraphicController {
     updateRoundScale(prevData, data) {
         this.round.forEach((mesh, i) => {
             if (data[i] > 126 && data[i] > prevData[i] * 1.2) {
-                const material = this.material
+                const geometry = new THREE.SphereGeometry(5, 32, 32);
+                const material = new THREE.MeshBasicMaterial()
                 const meshHSL = mesh.material.color.getHSL({})
                 material.color.setHSL(meshHSL.h, data[i] / 256, meshHSL.l - Math.random() * Math.random() * Math.random() * Math.random())
-                const copyMesh = new THREE.Mesh(this.sphereGeometry, material)
+                const copyMesh = new THREE.Mesh(geometry, material)
                 copyMesh.position.x = mesh.position.x * Math.random() * Math.random()
                 copyMesh.position.y = mesh.position.y * Math.random() * Math.random()
                 copyMesh.position.z = mesh.position.z * Math.random() * Math.random()
