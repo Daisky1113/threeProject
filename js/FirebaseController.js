@@ -104,27 +104,30 @@ class FirebaseController {
         this.globalChatRef = await firebase.firestore().collection('chats/')
         await this._handleGlobalChat()
         this.chatElement.show()
-        this.globalChatRef.orderBy('createdAt').limit(30).get().then(snap => {
-            const docLength = snap.docs.length
-            let dataCount = 0
-            snap.forEach((doc) => {
-                dataCount++
-                const data = doc.data()
-                data.id = doc.id
-                data.myChat = data.uid == this.uid
-                this.chatElement.addChat(data)
-                if (dataCount == docLength - 1) {
-                    this.chatElement.scrollToEnd('instant')
-                }
-            })
-        })
+        // this.globalChatRef.orderBy('createdAt').limit(30).get().then(snap => {
+        //     const docLength = snap.docs.length
+        //     let dataCount = 0
+        //     snap.forEach((doc) => {
+        //         dataCount++
+        //         const data = doc.data()
+        //         data.id = doc.id
+        //         data.myChat = data.uid == this.uid
+        //         this.chatElement.addChat(data)
+        //         if (dataCount == docLength - 1) {
+        //             this.chatElement.scrollToEnd('instant')
+        //         }
+        //     })
+        // })
         // this.chatElement.scrollToEnd()
         // this.userChatRef = firebase.fireStore().ref(`users/${this.uid}/chats/`)
     }
 
     async _handleGlobalChat() {
         await this.globalChatRef.orderBy('createdAt').onSnapshot(snap => {
+            const docLength = snap.docs.length
+            let docCount = 0
             snap.docChanges().forEach((change, i) => {
+                docCount++
                 switch (change.type) {
                     case 'added':
                         const doc = change.doc
@@ -139,8 +142,12 @@ class FirebaseController {
                         this.chatElement.clearInputArea()
                         break;
                 }
+                if (docCount == docLength) {
+                    this.chatElement.scrollToEnd('smooth')
+                }
             })
         })
+        this.chatElement.scrollToEnd('smooth')
     }
 
     sendChat(msg) {
