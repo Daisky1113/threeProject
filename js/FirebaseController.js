@@ -66,6 +66,7 @@ class FirebaseController {
                 this.uid = await user.uid
                 this._userInit()
                 this._chatInit()
+                console.log(this.uid)
             } else {
                 this.auth.signOut()
                 this.loginElment.hideUserInfo()
