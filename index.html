@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dot Wave</title>
+    <title>Chat</title>
     <link rel="stylesheet" href="css/destyle.css">
     <link rel="stylesheet"
         href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <script src="lib/three.min.js"></script>
     <script src="lib/Pass.js"></script>
@@ -28,71 +30,59 @@
         <header>
             <div class="header-inner">
                 <ul>
-                    <li id="js-linkHome">Dot Wave</li>
+                    <li id="js-linkHome">Chat</li>
                 </ul>
+                <div id="js-userInfo" class="user-info opacity-zero">
+                    <div class="avator-wrapper">
+                        <img src="" alt="">
+                    </div>
+                    <div class="user-name">
+
+                    </div>
+                    <div id="js-logoutBtn" class="logout-btn-wrapper">
+                        <i class="las la-sign-out-alt"></i>
+                        <div>logout</div>
+                    </div>
+                </div>
             </div>
         </header>
         <div class="contents">
-            <div class="home">
-                <div id="js-titleArea" class="title-area">
-                    <h1 id="js-headLine">Dot Wave</h1>
-                    <p id="js-paragraph">Select Your MP3 File by Youtube Audio Library</p>
-                </div>
-                <div class="fileInput-wrapper opacity-zero">
-                    <!-- <div class="fileInput-wrapper"> -->
-                    <label class="file-input-label " for="">
-                        <input id="js-fileInput" accept="audio/*" class="file-input" type="file">Upload Your MP3
-                        File
-                    </label>
-                </div>
-                <div class="audio-controlle-panel opacity-zero">
-                    <!-- <div class="audio-controlle-panel"> -->
-                    <div class="playbtn-area">
-                        <!-- <i class="js-fastBack las la-fast-backward"></i> -->
-                        <i class="js-play las la-play"></i>
-                        <i class="js-pause inVisible las la-pause"></i>
-                        <!-- <i class="js-playForward las la-forward"></i> -->
-                        <p class="track-name">hoge</p>
-                        <i class="js-loop las la-redo-alt"></i>
-                    </div>
-                    <div class="volume-area">
-                        <i class="js-volumeUp las la-volume-up"></i>
-                        <i class="js-volumeMute las inVisible la-volume-mute"></i>
-                        <input id="js-volumeInput" class="js-inputRange slider thumb-dot" type="range" value="50"
-                            min="0" max="100" step="1">
-                    </div>
-                    <div class="effect-area">
-                        <div class="input-wrapper js-inputVerticalWrapper">
-                            <span class="val opacity-zero">50</span>
-                            <input id="js-lowPassInput" class="js-inputRange slider vertical" type="range" value="50"
-                                min="0" max="100" step="1">
-                            <span id="js-lowpassBtn" class="effect-btn effect-type">Low</span>
+            <div id="js-loginContents" class="login inVisible">
+                <div class="card">
+                    <div class="card-header">Login</div>
+                    <div class="card-text">
+                        <div class="login-input-wrapper">
+                            <i class="las la-envelope"></i>
+                            <input id="js-mail" type="text">
                         </div>
-                        <!-- <div class="input-wrapper js-inputVerticalWrapper">
-                            <span class="val opacity-zero">50</span>
-                            <input id="js-midPathInput" class="js-inputRange slider vertical" type="range" value="50"
-                                min="0" max="100" step="1">
-                            <span class="effect-type">Mid</span>
-                        </div> -->
-                        <div class="input-wrapper js-inputVerticalWrapper">
-                            <span class="val opacity-zero">50</span>
-                            <input id="js-highPassInput" class="js-inputRange slider vertical" type="range" value="50"
-                                min="0" max="100" step="1">
-                            <span id="js-highpassBtn" class="effect-btn effect-type">High</span>
+                        <div class="login-input-wrapper">
+                            <i class="las la-key"></i>
+                            <input id="js-pass" type="password">
                         </div>
-                        <!-- <div class="input-wrapper js-inputVerticalWrapper">
-                            <span class="val opacity-zero">50</span>
-                            <input id="bpmInput" class="js-inputRange slider vertical" type="range" value="50" min="0"
-                                max="100" step="1"> <span class="effect-type">BPM</span>
-                        </div> -->
+                    </div>
+                    <div class="card-actions">
+                        <div id="js-loginBtn" class="btn">Login</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="js-cahtContents" class="chat ">
+                <div class="card">
+                    <div id="js-chatTextsArea" class="chat-texts-area">
+                    </div>
+                    <div class="chat-input-wrapper">
+                        <input id="js-chatInput" type="text">
+                        <i id="js-chatSendBtn" class="lab la-telegram-plane"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="js/MyShuffleText.js"></script>
-        <script src="js/AudioController.js"></script>
         <script src="js/GraphicController.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase.js"></script>
         <script src="js/data.js"></script>
+        <script src="js/LoginElementController.js"></script>
+        <script src="js/ChatElementController.js"></script>
+        <script src="js/FirebaseController.js"></script>
         <script src="js/index.js"></script>
 </body>
 
