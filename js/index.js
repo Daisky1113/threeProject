@@ -1,4 +1,8 @@
 
+
+
+
+
 //----------------------------------------
 // graphic
 //----------------------------------------
@@ -6,9 +10,8 @@ const graphicController = new GraphicController()
 //----------------------------------------
 // dom
 //----------------------------------------
-
-
 // const trackNameArea = document.querySelector('.track-name')
+
 
 
 // const playBtn = document.querySelector('.js-play')
@@ -179,9 +182,6 @@ const graphicController = new GraphicController()
 
 
 
-// h1.show()
-//     .then(() => p.show())
-//     .then(() => fileInputWrapper.classList.remove(OPACITY_ZERO))
 
 
 

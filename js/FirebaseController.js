@@ -46,12 +46,12 @@ class FirebaseController {
         })
 
         this.chatElement.chatSendBtn.addEventListener('click', () => {
-            this.sendChat(this.chatElement.inputVal)
+            this.createChat(this.chatElement.inputVal)
         })
 
         this.chatElement.chatInput.addEventListener('keyup', e => {
             if (e.key !== 'Enter') return
-            this.sendChat(this.chatElement.inputVal)
+            this.createChat(this.chatElement.inputVal)
         })
 
         this.chatElement.chatsWrapper.addEventListener('scroll', e => {
@@ -75,7 +75,6 @@ class FirebaseController {
             }
         })
     }
-
     async _userInit() {
         await this._setUserDocRef(this.uid)
         this._setUserData(this.uid)
@@ -103,24 +102,28 @@ class FirebaseController {
 
     async _chatInit() {
         this.globalChatRef = await firebase.firestore().collection('chats/')
+        // this._setUserChatRef()
         await this._handleGlobalChat()
         this.chatElement.show()
-        // this.globalChatRef.orderBy('createdAt').limit(30).get().then(snap => {
-        //     const docLength = snap.docs.length
-        //     let dataCount = 0
-        //     snap.forEach((doc) => {
-        //         dataCount++
-        //         const data = doc.data()
-        //         data.id = doc.id
-        //         data.myChat = data.uid == this.uid
-        //         this.chatElement.addChat(data)
-        //         if (dataCount == docLength - 1) {
-        //             this.chatElement.scrollToEnd('instant')
-        //         }
-        //     })
-        // })
-        // this.chatElement.scrollToEnd()
-        // this.userChatRef = firebase.fireStore().ref(`users/${this.uid}/chats/`)
+        this.chatElement.setCallbacks({
+
+            deleteCallback: id => {
+                this.deleteChat(id)
+            },
+
+            editCallback: (id, val) => {
+                this.editChat(id, val)
+            },
+
+            likeCallback: (id, like) => {
+                if (like) {
+                    this.like(id)
+                } else {
+                    this.removeLike(id)
+                }
+            }
+        })
+
     }
 
     async _handleGlobalChat() {
@@ -151,13 +154,40 @@ class FirebaseController {
         this.chatElement.scrollToEnd('smooth')
     }
 
-    sendChat(msg) {
-        this.globalChatRef.add({
-            uid: this.uid,
+    createChat(msg) {
+        console.log(this.userChatRef)
+        const chat = {
             name: this.userName.split(' ')[1],
             avator: this.userAvator,
             msg: msg,
+            likedUsers: [],
             createdAt: new Date()
+        }
+        this.globalChatRef.add({
+            uid: this.uid,
+            ...chat
+        })
+    }
+
+    editChat(id, msg) {
+        console.log(msg)
+        this.globalChatRef.doc(id).update({ msg })
+    }
+
+    deleteChat(id) {
+        return this.globalChatRef.doc(id).delete()
+    }
+
+    like(id) {
+        this.globalChatRef.doc(id).update({
+            likedUsers: firebase.firestore.FieldValue.arrayUnion(this.uid)
+        })
+    }
+
+    removeLike(id) {
+        console.log('remove')
+        this.globalChatRef.doc(id).update({
+            likedUsers: firebase.firestore.FieldValue.arrayRemove(this.uid)
         })
     }
 

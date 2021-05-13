@@ -509,10 +509,12 @@ input:disabled{
   position: absolute;
   right: 48px;
   top: 51px;
+  width: 33%;
   height: calc(100vh - 51px);
 }
 
 .chat .card{
+  width: 100%;
   margin: 0;
   box-shadow: 0 0px 0px #ccc;
   background-color: transparent;
@@ -529,7 +531,7 @@ input:disabled{
 }
 
 .chat-text{
-  width: 100%;
+  max-width: 80%;
   padding: 8px;
   display: flex;
   align-items: flex-end;
@@ -537,6 +539,7 @@ input:disabled{
 
 .chat-text.my-chat{
   flex-flow: row-reverse;
+  margin-left: auto;
 }
 
 .chat-text.my-chat .user-comment{
@@ -544,7 +547,7 @@ input:disabled{
 }
 
 .chat-text.parent .chat-header{
-  width: 54px;
+  width: 54px ;
 }
 .chat-text .chat-header .user-name{
   font-size: 12px;
@@ -565,16 +568,26 @@ input:disabled{
 }
 
 .chat .chat-texts-area .chat-text .chat-body{
-  padding-left: 16px;
+  padding: 0 16px;
   background-color: #fff;
   border-radius: 25px;
-  font-size: 14px;
-  width: 85%;
+  font-size: 20px;
+  width: auto;
+  max-width: calc(80% - 54px);
 }
 
 .chat .chat-texts-area .chat-text.my-chat .chat-body{
   padding-right: 8px;
   padding-left: 0;
+}
+
+.chat .chat-texts-area .chat-text.my-chat .chat-body .chat-input-wrapper{
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.chat .chat-texts-area .chat-text.my-chat .chat-body .chat-input-wrapper input{
+  text-align-last: left;
 }
 
 .chat .chat-texts-area .chat-text.child .chat-header{
@@ -627,9 +640,11 @@ input:disabled{
   color: #EB7A77;
 }
 
-.chat .chat-actions{
+.chat .my-chat .chat-actions{
 text-align: right;
-font-size: 16px;
+display: flex;
+/* flex-flow: row-reverse; */
+
 }
 .chat .chat-actions span.btn-wrapper{
   margin-right: 16px;
@@ -638,4 +653,15 @@ font-size: 16px;
 .chat .chat-actions i{
   cursor: pointer;
   color: #666;
+  font-size: 20px;
 }
+
+.chat .chat-actions i.my-like{
+  color: #E83015;
+}
+
+.like-count{
+  color: #E83015;
+  font-size: 14px;
+}
+

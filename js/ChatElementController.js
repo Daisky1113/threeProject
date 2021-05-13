@@ -6,10 +6,23 @@ class ChatElementController {
         this.chatSendBtn = this.wrapperElement.querySelector('#js-chatSendBtn')
         this.isScrollEnd = false
         this.scrollVal = 0
+        this.likeCallback = () => { }
+        this.commentCallback = () => { }
+        this.replyCallback = () => { }
+        this.editCallback = () => { }
+        this.deleteCallback = () => { }
     }
 
     get inputVal() {
         return this.chatInput.value
+    }
+
+    setCallbacks(callback) {
+        this.likeCallback = callback.likeCallback
+        this.commentCallback = callback.commentCallback
+        this.replyCallback = callback.replyCallback
+        this.editCallback = callback.editCallback
+        this.deleteCallback = callback.deleteCallback
     }
 
     show() {
@@ -45,7 +58,7 @@ class ChatElementController {
     _createChat(data) {
         const chatWrapper = document.createElement('div')
         chatWrapper.id = data.id
-        chatWrapper.classList.add('chat-text-wrapper')
+        chatWrapper.classList.add('chat-text-wrapper', 'js-chat-text-wrapper')
 
         const chatText = document.createElement('div')
         chatText.classList.add('chat-text')
@@ -77,18 +90,60 @@ class ChatElementController {
         likeBtn.classList.add('btn-wrapper')
         const likeIcon = document.createElement('i')
         likeIcon.classList.add('lar', 'la-heart')
+        const likeCount = document.createElement('span')
+        likeCount.classList.add('js-likeCount', 'like-count')
+        if (data.likedUsers && data.likedUsers.includes(data.uid)) {
+            likeIcon.classList.add('my-like')
+            likeCount.textContent = data.likedUsers.length
+        }
+        likeBtn.insertAdjacentElement('beforeend', likeIcon)
+        likeBtn.insertAdjacentElement('beforeend', likeCount)
 
         const commentBtn = document.createElement('span')
         commentBtn.classList.add('btn-wrapper')
         const commentIcon = document.createElement('i')
         commentIcon.classList.add('lar', 'la-comment')
-
-        likeBtn.insertAdjacentElement('beforeend', likeIcon)
-
         commentBtn.insertAdjacentElement('beforeend', commentIcon)
 
+        const replyBtn = document.createElement('span')
+        replyBtn.classList.add('btn-wrapper')
+        const replyIcon = document.createElement('i')
+        replyIcon.classList.add('las', 'la-reply')
+        replyBtn.insertAdjacentElement('beforeend', replyIcon)
+
         chatActions.insertAdjacentElement('beforeend', likeBtn)
-        chatActions.insertAdjacentElement('beforeend', commentIcon)
+        chatActions.insertAdjacentElement('beforeend', commentBtn)
+        chatActions.insertAdjacentElement('beforeend', replyBtn)
+
+
+
+        if (data.myChat) {
+            const editBtn = document.createElement('span')
+            editBtn.classList.add('btn-wrapper')
+            const editIcon = document.createElement('i')
+            editIcon.classList.add('lar', 'la-edit')
+
+            editBtn.insertAdjacentElement('beforeend', editIcon)
+
+
+            const deleteBtn = document.createElement('span')
+            deleteBtn.classList.add('btn-wrapper')
+            const deleteIcon = document.createElement('i')
+            deleteIcon.classList.add('lar', 'la-trash-alt')
+            deleteBtn.insertAdjacentElement('beforeend', deleteIcon)
+
+            chatActions.insertAdjacentElement('beforeend', deleteBtn)
+            chatActions.insertAdjacentElement('beforeend', editBtn)
+            chatActions.insertAdjacentElement('beforeend', replyBtn)
+            chatActions.insertAdjacentElement('beforeend', commentBtn)
+            chatActions.insertAdjacentElement('beforeend', likeBtn)
+        } else {
+            chatActions.insertAdjacentElement('beforeend', likeBtn)
+            chatActions.insertAdjacentElement('beforeend', commentBtn)
+            chatActions.insertAdjacentElement('beforeend', replyBtn)
+        }
+
+
 
         chatBody.insertAdjacentElement('beforeend', userComment)
         chatBody.insertAdjacentElement('beforeend', chatActions)
@@ -100,13 +155,97 @@ class ChatElementController {
         chatText.insertAdjacentElement('beforeend', chatBody)
 
         chatWrapper.insertAdjacentElement('beforeend', chatText)
+        chatWrapper.addEventListener('click', e => {
+            const id = chatWrapper.id
+            const classList = e.target.classList
+            console.log(classList.contains('my-like'))
+            if (classList.contains('la-heart')) {
+                const like = likeIcon.classList.contains('my-like')
 
+                if (like) {
+                    likeIcon.classList.remove('my-like')
+                    this.likeCallback(id, like)
+                } else {
+                    likeIcon.classList.add('my-like')
+                    this.likeCallback(id, like)
+                }
+
+            } else if (classList.contains('la-comment')) {
+                console.log('comment')
+            } else if (classList.contains('la-reply')) {
+                console.log('reply')
+            } else if (classList.contains('la-edit')) {
+                const target = this._getTargetElementById(id)
+                this._replaceTextToEditArea(target, id)
+            } else if (classList.contains('la-trash-alt')) {
+                this.deleteCallback(id)
+                this.deleteChat(id)
+            }
+        })
         return chatWrapper
     }
 
+    _getTargetElementById(id) {
+        return this.chatsWrapper.querySelector('#' + id)
+    }
+
+    _replaceTextToEditArea(target, id) {
+        const textArea = target.querySelector('.user-comment')
+        const prevVal = textArea.textContent
+        const editArea = this._createEditInput(prevVal, textArea, id)
+        textArea.innerHTML = ''
+        textArea.appendChild(editArea)
+
+        console.log(prevVal)
+    }
+
+    _createEditInput(placeholder, target, id) {
+        const editWrapper = document.createElement('div')
+        editWrapper.classList.add('chat-input-wrapper')
+        const editInput = document.createElement('input')
+        const sendBtn = document.createElement('i')
+        sendBtn.classList.add('lab', 'la-telegram-plane')
+        editInput.type = 'text'
+        editInput.placeholder = placeholder
+
+        editInput.addEventListener('keyup', e => {
+            if (e.key == 'Escape') {
+                target.innerHTML = placeholder
+            }
+        })
+
+        sendBtn.addEventListener('click', e => {
+            const editVal = editInput.value
+            if (!editVal) target.innerHTML = placeholder
+            this.editCallback(id, editVal)
+            target.innerHTML = editVal
+        })
+
+        editWrapper.insertAdjacentElement('beforeend', editInput)
+        editWrapper.insertAdjacentElement('beforeend', sendBtn)
+        return editWrapper
+    }
+
+    _deleteEditInput(target) {
+
+    }
     addChat(data) {
         const chat = this._createChat(data)
-        console.log(this.wrapperElement.clientHeight)
         this.chatsWrapper.insertAdjacentElement('beforeend', chat)
+    }
+
+    deleteChat(id) {
+        this.chatsWrapper.removeChild(this.chatsWrapper.querySelector('#' + id))
+    }
+
+    addLike(id) {
+
+    }
+
+    addEditArea(id) {
+
+    }
+    editChat(id) {
+
     }
 }
